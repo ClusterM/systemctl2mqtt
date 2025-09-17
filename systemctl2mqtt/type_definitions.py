@@ -156,15 +156,78 @@ class PIDStats(TypedDict):
     pid
         The pid of the Service
     memory
-        Used memory in MB
+        Used memory in MB (from top)
     cpu
         The cpu usage by the Service in cpu-% (ex.: a Systemctl with 4 cores has 400% cpu available)
-
+    memory_pss
+        Proportional Set Size in MB
+    memory_pss_anon
+        Anonymous PSS in MB
+    memory_pss_file
+        File-backed PSS in MB
+    memory_pss_dirty
+        Dirty PSS in MB
+    memory_pss_shmem
+        Shared memory PSS in MB
+    memory_rss
+        Resident Set Size in MB
+    memory_shared_clean
+        Shared clean pages in MB
+    memory_shared_dirty
+        Shared dirty pages in MB
+    memory_private_clean
+        Private clean pages in MB
+    memory_private_dirty
+        Private dirty pages in MB
+    memory_referenced
+        Referenced pages in MB
+    memory_anonymous
+        Anonymous memory in MB
+    memory_lazyfree
+        LazyFree pages in MB
+    memory_anon_hugepages
+        Anonymous huge pages in MB
+    memory_shmem_pmd_mapped
+        Shared memory PMD mapped pages in MB
+    memory_file_pmd_mapped
+        File-backed PMD mapped pages in MB
+    memory_shared_hugetlb
+        Shared hugetlb pages in MB
+    memory_private_hugetlb
+        Private hugetlb pages in MB
+    memory_swap
+        Swap in MB
+    memory_swappss
+        Proportional Swap usage in MB
+    memory_locked
+        Locked pages in MB
     """
 
     pid: int
     cpu: float
     memory: float
+
+    memory_pss: float
+    memory_pss_anon: float
+    memory_pss_file: float
+    memory_pss_dirty: float
+    memory_pss_shmem: float
+    memory_rss: float
+    memory_shared_clean: float
+    memory_shared_dirty: float
+    memory_private_clean: float
+    memory_private_dirty: float
+    memory_referenced: float
+    memory_anonymous: float
+    memory_lazyfree: float
+    memory_anon_hugepages: float
+    memory_shmem_pmd_mapped: float
+    memory_file_pmd_mapped: float
+    memory_shared_hugetlb: float
+    memory_private_hugetlb: float
+    memory_swap: float
+    memory_swappss: float
+    memory_locked: float
 
 
 class ServiceStats(TypedDict):
@@ -177,12 +240,53 @@ class ServiceStats(TypedDict):
     host
         The Systemctl host
     memory
-        Used memory in MB
+        Used memory in MB (from top)
     cpu
         The cpu usage by the Service in cpu-% (ex.: a Systemctl with 4 cores has 400% cpu available)
     pid_stats
         The stats for all pids
-
+    memory_pss
+        Proportional Set Size in MB
+    memory_pss_anon
+        Anonymous PSS in MB
+    memory_pss_file
+        File-backed PSS in MB
+    memory_pss_dirty
+        Dirty PSS in MB
+    memory_pss_shmem
+        Shared memory PSS in MB
+    memory_rss
+        Resident Set Size in MB
+    memory_shared_clean
+        Shared clean pages in MB
+    memory_shared_dirty
+        Shared dirty pages in MB
+    memory_private_clean
+        Private clean pages in MB
+    memory_private_dirty
+        Private dirty pages in MB
+    memory_referenced
+        Referenced pages in MB
+    memory_anonymous
+        Anonymous memory in MB
+    memory_lazyfree
+        LazyFree pages in MB
+    memory_anon_hugepages
+        Anonymous huge pages in MB
+    memory_shmem_pmd_mapped
+        Shared memory PMD mapped pages in MB
+    memory_file_pmd_mapped
+        File-backed PMD mapped pages in MB
+    memory_shared_hugetlb
+        Shared hugetlb pages in MB
+    memory_private_hugetlb
+        Private hugetlb pages in MB
+    memory_swap
+        Swap in MB
+    memory_swappss
+        Proportional Swap usage in MB
+    memory_locked
+        Locked pages in MB
     """
 
     name: str
@@ -190,6 +294,28 @@ class ServiceStats(TypedDict):
     memory: float
     cpu: float
     pid_stats: dict[int, PIDStats]
+
+    memory_pss: float
+    memory_pss_anon: float
+    memory_pss_file: float
+    memory_pss_dirty: float
+    memory_pss_shmem: float
+    memory_rss: float
+    memory_shared_clean: float
+    memory_shared_dirty: float
+    memory_private_clean: float
+    memory_private_dirty: float
+    memory_referenced: float
+    memory_anonymous: float
+    memory_lazyfree: float
+    memory_anon_hugepages: float
+    memory_shmem_pmd_mapped: float
+    memory_file_pmd_mapped: float
+    memory_shared_hugetlb: float
+    memory_private_hugetlb: float
+    memory_swap: float
+    memory_swappss: float
+    memory_locked: float
 
 
 class ServiceDeviceEntry(TypedDict):

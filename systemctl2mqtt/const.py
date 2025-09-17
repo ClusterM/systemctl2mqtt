@@ -40,9 +40,30 @@ INVALID_HA_TOPIC_CHARS = re.compile(r"[^a-zA-Z0-9_-]")
 ANSI_ESCAPE = re.compile(r"\x1B\[[0-?]*[ -/]*[@-~]")
 # fmt: off
 STATS_REGISTRATION_ENTRIES = [
-    # label,field,device_class,unit,icon
-    ('CPU',                     'cpu',              None,           '%',    'mdi:chip'),
-    ('Memory',                  'memory',           'data_size',    'MB',   'mdi:memory'),
+    # label,                   field,                  device_class,    unit,   icon
+    ('CPU',                    'cpu',                  None,            '%',    'mdi:chip'),
+    ('Memory',                 'memory',               'data_size',     'MB',   'mdi:memory'),
+    ('PSS Memory',             'memory_pss',           'data_size',     'MB',   'mdi:memory'),
+    ('PSS Anon',               'memory_pss_anon',      'data_size',     'MB',   'mdi:memory'),
+    ('PSS File',               'memory_pss_file',      'data_size',     'MB',   'mdi:memory'),
+    ('PSS Dirty',              'memory_pss_dirty',     'data_size',     'MB',   'mdi:memory'),
+    ('PSS Shmem',              'memory_pss_shmem',     'data_size',     'MB',   'mdi:memory'),
+    ('RSS',                    'memory_rss',           'data_size',     'MB',   'mdi:memory'),
+    ('Shared Clean',           'memory_shared_clean',  'data_size',     'MB',   'mdi:memory'),
+    ('Shared Dirty',           'memory_shared_dirty',  'data_size',     'MB',   'mdi:memory'),
+    ('Private Clean',          'memory_private_clean', 'data_size',     'MB',   'mdi:memory'),
+    ('Private Dirty',          'memory_private_dirty', 'data_size',     'MB',   'mdi:memory'),
+    ('Referenced',             'memory_referenced',    'data_size',     'MB',   'mdi:memory'),
+    ('Anonymous',              'memory_anonymous',     'data_size',     'MB',   'mdi:memory'),
+    ('LazyFree',               'memory_lazyfree',      'data_size',     'MB',   'mdi:memory'),
+    ('Anon HugePages',         'memory_anon_hugepages','data_size',     'MB',   'mdi:memory'),
+    ('Shmem PMD Mapped',       'memory_shmem_pmd_mapped','data_size',   'MB',   'mdi:memory'),
+    ('File PMD Mapped',        'memory_file_pmd_mapped','data_size',    'MB',   'mdi:memory'),
+    ('Shared HugeTLB',         'memory_shared_hugetlb','data_size',     'MB',   'mdi:memory'),
+    ('Private HugeTLB',        'memory_private_hugetlb','data_size',    'MB',   'mdi:memory'),
+    ('Swap',                   'memory_swap',          'data_size',     'MB',   'mdi:swap-horizontal'),
+    ('Swap PSS',               'memory_swappss',       'data_size',     'MB',   'mdi:swap-horizontal'),
+    ('Locked',                 'memory_locked',        'data_size',     'MB',   'mdi:lock'),
 ]
 # fmt: on
 

@@ -975,6 +975,26 @@ class Systemctl2Mqtt:
                     retain=True,
                 )
 
+    def get_smaps_rollup(self, pid: int) -> dict[str, int]:
+        """
+        Parse /proc/<pid>/smaps_rollup into a dictionary.
+        Keys are field names (e.g. 'Pss', 'Pss_Anon', 'RssFile', ...).
+        Values are integers in kilobytes.
+        """
+        result = {}
+        path = f"/proc/{pid}/smaps_rollup"
+        try:
+            with open(path, "r") as f:
+                for line in f:
+                    parts = line.split()
+                    if len(parts) >= 2 and parts[1].isdigit():
+                        key = parts[0].rstrip(":").lower()
+                        val = int(parts[1])  # always in kB
+                        result[key] = val
+        except FileNotFoundError:
+            raise ValueError(f"Process {pid} not found or smaps_rollup not supported")
+        return result
+
     def _handle_stats_queue(self) -> None:
         """Check if any stat is present in the queue and process it.
 
@@ -1045,11 +1065,34 @@ class Systemctl2Mqtt:
                         #     self.known_stat_services[service][pid]["last"] - container_date
                         # ).total_seconds()
 
+                        smaps_rollup = self.get_smaps_rollup(pid)
+
                         pid_stats = PIDStats(
                             {
                                 "pid": pid,
                                 "cpu": float(stat[8]),
                                 "memory": parse_top_size(stat[5]) / 1024,  # KB --> MB
+                                "memory_pss_anon": smaps_rollup.get("pss_anon", 0) / 1024,
+                                "memory_pss": smaps_rollup.get("pss", 0) / 1024,
+                                "memory_pss_file": smaps_rollup.get("pss_file", 0) / 1024,
+                                "memory_pss_dirty": smaps_rollup.get("pss_dirty", 0) / 1024,
+                                "memory_pss_shmem": smaps_rollup.get("pss_shmem", 0) / 1024,
+                                "memory_rss": smaps_rollup.get("rss", 0) / 1024,
+                                "memory_shared_clean": smaps_rollup.get("shared_clean", 0) / 1024,
+                                "memory_shared_dirty": smaps_rollup.get("shared_dirty", 0) / 1024,
+                                "memory_private_clean": smaps_rollup.get("private_clean", 0) / 1024,
+                                "memory_private_dirty": smaps_rollup.get("private_dirty", 0) / 1024,
+                                "memory_referenced": smaps_rollup.get("referenced", 0) / 1024,
+                                "memory_anonymous": smaps_rollup.get("anonymous", 0) / 1024,
+                                "memory_lazyfree": smaps_rollup.get("lazyfree", 0) / 1024,
+                                "memory_anon_hugepages": smaps_rollup.get("anonhugepages", 0) / 1024,
+                                "memory_shmem_pmd_mapped": smaps_rollup.get("shmepmdmapped", 0) / 1024,
+                                "memory_file_pmd_mapped": smaps_rollup.get("filepmdmapped", 0) / 1024,
+                                "memory_shared_hugetlb": smaps_rollup.get("shared_hugetlb", 0) / 1024,
+                                "memory_private_hugetlb": smaps_rollup.get("private_hugetlb", 0) / 1024,
+                                "memory_swap": smaps_rollup.get("swap", 0) / 1024,
+                                "memory_swappss": smaps_rollup.get("swappss", 0) / 1024,
+                                "memory_locked": smaps_rollup.get("locked", 0) / 1024,
                             }
                         )
                         stats_logger.debug("Printing pid stats: %s", pid_stats)
@@ -1060,6 +1103,27 @@ class Systemctl2Mqtt:
                                 "host": self.cfg["systemctl2mqtt_hostname"],
                                 "cpu": 0,
                                 "memory": 0,
+                                "memory_pss": 0,
+                                "memory_pss_anon": 0,
+                                "memory_pss_file": 0,
+                                "memory_pss_dirty": 0,
+                                "memory_pss_shmem": 0,
+                                "memory_rss": 0,
+                                "memory_shared_clean": 0,
+                                "memory_shared_dirty": 0,
+                                "memory_private_clean": 0,
+                                "memory_private_dirty": 0,
+                                "memory_referenced": 0,
+                                "memory_anonymous": 0,
+                                "memory_lazyfree": 0,
+                                "memory_anon_hugepages": 0,
+                                "memory_shmem_pmd_mapped": 0,
+                                "memory_file_pmd_mapped": 0,
+                                "memory_shared_hugetlb": 0,
+                                "memory_private_hugetlb": 0,
+                                "memory_swap": 0,
+                                "memory_swappss": 0,
+                                "memory_locked": 0,
                                 "pid_stats": self.last_stat_services[service][
                                     "pid_stats"
                                 ]
@@ -1071,6 +1135,28 @@ class Systemctl2Mqtt:
 
                         for pid_stat in service_stats["pid_stats"].values():
                             service_stats["memory"] += pid_stat["memory"]
+                            service_stats["memory"] += pid_stat["memory"]
+                            service_stats["memory_pss"] += pid_stat["memory_pss"]
+                            service_stats["memory_pss_anon"] += pid_stat["memory_pss_anon"]
+                            service_stats["memory_pss_file"] += pid_stat["memory_pss_file"]
+                            service_stats["memory_pss_dirty"] += pid_stat["memory_pss_dirty"]
+                            service_stats["memory_pss_shmem"] += pid_stat["memory_pss_shmem"]
+                            service_stats["memory_rss"] += pid_stat["memory_rss"]
+                            service_stats["memory_shared_clean"] += pid_stat["memory_shared_clean"]
+                            service_stats["memory_shared_dirty"] += pid_stat["memory_shared_dirty"]
+                            service_stats["memory_private_clean"] += pid_stat["memory_private_clean"]
+                            service_stats["memory_private_dirty"] += pid_stat["memory_private_dirty"]
+                            service_stats["memory_referenced"] += pid_stat["memory_referenced"]
+                            service_stats["memory_anonymous"] += pid_stat["memory_anonymous"]
+                            service_stats["memory_lazyfree"] += pid_stat["memory_lazyfree"]
+                            service_stats["memory_anon_hugepages"] += pid_stat["memory_anon_hugepages"]
+                            service_stats["memory_shmem_pmd_mapped"] += pid_stat["memory_shmem_pmd_mapped"]
+                            service_stats["memory_file_pmd_mapped"] += pid_stat["memory_file_pmd_mapped"]
+                            service_stats["memory_shared_hugetlb"] += pid_stat["memory_shared_hugetlb"]
+                            service_stats["memory_private_hugetlb"] += pid_stat["memory_private_hugetlb"]
+                            service_stats["memory_swap"] += pid_stat["memory_swap"]
+                            service_stats["memory_swappss"] += pid_stat["memory_swappss"]
+                            service_stats["memory_locked"] += pid_stat["memory_locked"]
                             service_stats["cpu"] += pid_stat["cpu"]
 
                         self.last_stat_services[service] = service_stats
